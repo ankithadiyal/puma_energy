@@ -1,0 +1,13 @@
+assemble:
+    - from: vite-build
+      into: static
+pe-dashboard-demand-types-cx:
+    friendlyURLMapping: pe-dashboard-demand-types-cx
+    htmlElementName: pe-dashboard-demand-types-cx
+    instanceable: false
+    name: Puma Energy Dashboard Demand Types
+    portletCategoryName: category.client-extensions
+    type: customElement
+    urls:
+        - assets/*.js
+    useESM: true
