@@ -1,0 +1,154 @@
+/* =========================================================
+   DATATABLE BASE
+   ========================================================= */
+
+.demand-table-wrapper {
+  width: 100%;
+}
+
+table.dataTable {
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+/* =========================================================
+   TABLE HEADER (FIXED / STICKY)
+   ========================================================= */
+
+table.dataTable thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+
+  background: #f4f6f8;
+  font-weight: 600;
+  font-size: 13px;
+  color: #1c1c1c;
+
+  padding: 8px 12px;
+  white-space: nowrap;
+
+  border-bottom: 1px solid #dcdcdc;
+  border-right: 1px solid #e0e0e0;
+}
+
+/* =========================================================
+   TABLE BODY
+   ========================================================= */
+
+table.dataTable tbody td {
+  font-size: 13px;
+  padding: 8px 12px;
+  white-space: nowrap;
+
+  border-right: 1px solid #ececec;
+  border-bottom: 1px solid #f0f0f0;
+
+  background: #ffffff !important;
+  font-weight: normal !important;
+  color: #1c1c1c;
+}
+
+/* Prevent first row styling issue */
+table.dataTable tbody tr:first-child td {
+  background: #ffffff !important;
+  font-weight: normal !important;
+}
+
+/* =========================================================
+   SCROLLING BEHAVIOR
+   ========================================================= */
+
+/* Horizontal scrollbar */
+.dataTables_scrollBody {
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+}
+
+/* Prevent header & body width mismatch */
+.dataTables_scrollHeadInner,
+.dataTables_scrollHeadInner table {
+  width: 100% !important;
+}
+
+/* Remove spacing between header and body */
+.dataTables_scrollHead {
+  margin-bottom: 0 !important;
+}
+
+/* =========================================================
+   PAGINATION & INFO
+   ========================================================= */
+
+.dataTables_wrapper .dataTables_paginate {
+  margin-top: 12px;
+}
+
+.dataTables_wrapper .dataTables_info {
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* =========================================================
+   ROW HOVER (LIFERAY STYLE)
+   ========================================================= */
+
+table.dataTable tbody tr:hover {
+  background-color: #f7f9fb !important;
+}
+
+/* =========================================================
+   OPTIONAL BADGES (SAFE)
+   ========================================================= */
+
+.category-badge,
+.priority-badge {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.category-badge {
+  background: #e6ecf5;
+  color: #1c2b4a;
+}
+
+.priority-badge {
+  background: #d6eaf8;
+  color: #154360;
+}
+
+.stage-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #d5f5e3;
+  color: #1e8449;
+}
+
+/* =========================================================
+   BUTTONS (OPTIONAL)
+   ========================================================= */
+
+.approve-btn {
+  background: #1e8449;
+  color: #ffffff;
+  border: none;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.reject-btn {
+  background: #c0392b;
+  color: #ffffff;
+  border: none;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}

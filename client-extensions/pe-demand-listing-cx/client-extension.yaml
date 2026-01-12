@@ -1,0 +1,15 @@
+assemble:
+    - from: vite-build
+      into: static
+pe-demand-listing-cx:
+    friendlyURLMapping: pe-demand-listing-cx
+    htmlElementName: pe-demand-listing-cx
+    instanceable: false
+    name: Puma Energy Dashboard Listing
+    portletCategoryName: category.client-extensions
+    type: customElement
+    urls:
+        - assets/*.js
+    cssURLs:
+        - assets/*.css    
+    useESM: true

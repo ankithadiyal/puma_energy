@@ -1,0 +1,41 @@
+{
+	"dependencies": {
+		"@clayui/card": "^3.106.1",
+		"axios": "^1.7.2",
+		"bootstrap": "^5.3.3",
+		"datatables.net": "^2.3.6",
+		"datatables.net-fixedcolumns": "^5.0.5",
+		"date-fns": "^4.1.0",
+		"i18next": "^23.11.4",
+		"jquery": "^3.7.1",
+		"mermaid": "^11.6.0",
+		"react": "16.12.0",
+		"react-bootstrap": "^1.6.3",
+		"react-datepicker": "^7.4.0",
+		"react-dom": "16.12.0",
+		"react-i18next": "^14.1.1",
+		"react-select": "^5.8.1",
+		"screenfull": "^6.0.2",
+		"swiper": "^11.1.9"
+	},
+	"devDependencies": {
+		"@types/react": "^18.2.15",
+		"@types/react-dom": "^18.2.7",
+		"@vitejs/plugin-react": "^4.0.3",
+		"vite": "^4.4.5"
+	},
+	"name": "pe-demand-listing-cx",
+	"private": true,
+	"scripts": {
+		"build": "vite build",
+		"dev": "vite",
+		"preview": "vite preview"
+	},
+	"eslintConfig": {
+		"globals": {
+			"Liferay": true
+		}
+	},
+	"type": "module",
+	"version": "0.0.0"
+}
