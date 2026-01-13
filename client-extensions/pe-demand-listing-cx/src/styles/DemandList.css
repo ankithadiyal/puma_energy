@@ -55,30 +55,22 @@ table.dataTable tbody tr:first-child td {
   font-weight: normal !important;
 }
 
-/* =========================================================
-   SCROLLING BEHAVIOR
-   ========================================================= */
+ 
 
-/* Horizontal scrollbar */
 .dataTables_scrollBody {
   overflow-x: auto !important;
   overflow-y: auto !important;
 }
 
-/* Prevent header & body width mismatch */
 .dataTables_scrollHeadInner,
 .dataTables_scrollHeadInner table {
   width: 100% !important;
 }
 
-/* Remove spacing between header and body */
 .dataTables_scrollHead {
   margin-bottom: 0 !important;
 }
-
-/* =========================================================
-   PAGINATION & INFO
-   ========================================================= */
+ 
 
 .dataTables_wrapper .dataTables_paginate {
   margin-top: 12px;
@@ -88,18 +80,12 @@ table.dataTable tbody tr:first-child td {
   font-size: 12px;
   margin-top: 8px;
 }
-
-/* =========================================================
-   ROW HOVER (LIFERAY STYLE)
-   ========================================================= */
-
+ 
 table.dataTable tbody tr:hover {
   background-color: #f7f9fb !important;
 }
 
-/* =========================================================
-   OPTIONAL BADGES (SAFE)
-   ========================================================= */
+ 
 
 .category-badge,
 .priority-badge {
@@ -129,10 +115,7 @@ table.dataTable tbody tr:hover {
   color: #1e8449;
 }
 
-/* =========================================================
-   BUTTONS (OPTIONAL)
-   ========================================================= */
-
+ 
 .approve-btn {
   background: #1e8449;
   color: #ffffff;
@@ -152,3 +135,12 @@ table.dataTable tbody tr:hover {
   border-radius: 4px;
   cursor: pointer;
 }
+
+
+.dataTables_wrapper {
+  width: 100%;
+}
+
+.dataTables_scrollBody {
+  overflow-x: auto !important;
+} 	

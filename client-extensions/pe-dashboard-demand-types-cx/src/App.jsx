@@ -1,10 +1,9 @@
 import React from "react";
-import ServiceDetailPage from "./components/ServiceDetailPage";
-
+ 
 const App = () => {
   return (
     <>
-      <ServiceDetailPage />
+       <h1> Hello </h1>
     </>
   );
 };
