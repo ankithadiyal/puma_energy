@@ -23,7 +23,7 @@
 		"@vitejs/plugin-react": "^4.0.3",
 		"vite": "^4.4.5"
 	},
-	"name": "pe-dashboard-demand-types-cx",
+	"name": "pe-dashboard-demand-initiator-team-cx",
 	"private": true,
 	"scripts": {
 		"build": "vite build",

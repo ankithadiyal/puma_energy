@@ -1,0 +1,13 @@
+assemble:
+    - from: vite-build
+      into: static
+pe-dashboard-demand-initiator-team-cx:
+    friendlyURLMapping: pe-dashboard-demand-initiator-team-cx
+    htmlElementName: pe-dashboard-demand-initiator-team-cx
+    instanceable: false
+    name: Puma Energy Dashboard Demand Initiator Team
+    portletCategoryName: category.client-extensions
+    type: customElement
+    urls:
+        - assets/*.js
+    useESM: true
