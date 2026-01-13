@@ -18,9 +18,7 @@ const DemandListing = () => {
   const [selectedDemand, setSelectedDemand] = useState(null);
 
   const categoryMap = useRef({});
-  const priorityMap = useRef({});
-
-  /* ================= USER ROLE + WORKFLOW TASKS ================= */
+  const priorityMap = useRef({}); 
 
   const loadUserAndTasks = useCallback(async () => {
     const userId = Liferay.ThemeDisplay.getUserId();
@@ -43,8 +41,7 @@ const DemandListing = () => {
 
     setTasks(taskRes.data.items || []);
   }, []);
-
-  /* ================= PICKLISTS ================= */
+ 
 
   const loadPicklists = async () => {
     const res = await axiosPrivate.get(
@@ -65,8 +62,7 @@ const DemandListing = () => {
       }
     });
   };
-
-  /* ================= DEMANDS ================= */
+ 
 
   const loadDemands = async () => {
     const scopeGroupId = Liferay.ThemeDisplay.getScopeGroupId();
@@ -88,8 +84,7 @@ const DemandListing = () => {
     };
     init();
   }, [loadUserAndTasks]);
-
-  /* ================= HELPERS ================= */
+ 
 
   const renderPicklist = (value, map) => {
     if (!value) return "-";
@@ -121,9 +116,7 @@ const DemandListing = () => {
         t.objectReviewed &&
         String(t.objectReviewed.id) === String(demandId)
     );
-
-  /* ================= DATATABLE ================= */
-
+ 
   useEffect(() => {
     if (loading) return;
 
@@ -135,11 +128,12 @@ const DemandListing = () => {
       data: demands,
       searching: false,
       lengthChange: false,
-      ordering: false,
+    
       paging: true,
       info: true,
       autoWidth: false,
-
+ ordering: true,   
+      order: [[1, "desc"]],
       columns: [
         { title: "Item", data: "name" },
         {
@@ -209,7 +203,7 @@ const DemandListing = () => {
 
   return (
     <div style={{ overflowX: "auto" }}>
-      <h2>Demand Intake Listing</h2>
+       
 
       <table
         id="demandTable"
@@ -218,15 +212,29 @@ const DemandListing = () => {
       />
 
       {activeModal && selectedDemand && (
+        
+
         <DemandWorkflowModal
-          demand={selectedDemand}
-          task={getWorkflowTask(selectedDemand.id)}
-          onClose={(refresh) => {
-            setActiveModal(false);
-            setSelectedDemand(null);
-            if (refresh) loadDemands();
-          }}
-        />
+            demand={selectedDemand}
+            task={getWorkflowTask(selectedDemand.id)}
+            onClose={async (refresh) => {
+              setActiveModal(false);
+              setSelectedDemand(null);
+
+              if (refresh) {
+                setLoading(true);
+
+
+                 if ($.fn.DataTable.isDataTable("#demandTable")) {
+                    $("#demandTable").DataTable().clear().destroy(true);
+                  }
+                await loadUserAndTasks(); 
+                await loadDemands();       
+                setLoading(false);
+              }
+            }}
+          />
+
       )}
     </div>
   );
