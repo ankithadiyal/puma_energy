@@ -17,8 +17,12 @@ const DemandListing = () => {
   const [activeModal, setActiveModal] = useState(false);
   const [selectedDemand, setSelectedDemand] = useState(null);
 
+  /* ========= MASTER MAPS (ID -> {label,color}) ========= */
   const categoryMap = useRef({});
-  const priorityMap = useRef({}); 
+  const priorityMap = useRef({});
+  const stageMap = useRef({});
+
+  /* ========= LOAD USER + TASKS ========= */
 
   const loadUserAndTasks = useCallback(async () => {
     const userId = Liferay.ThemeDisplay.getUserId();
@@ -33,36 +37,49 @@ const DemandListing = () => {
     const roles =
       userRes.data.roleBriefs?.map(r => r.name.toLowerCase()) || [];
 
-    console.log("Roles ===", roles);
-
     if (roles.includes("it manager")) setRole("itManager");
     else if (roles.includes("demand manager")) setRole("demandManager");
     else setRole("viewer");
 
     setTasks(taskRes.data.items || []);
   }, []);
- 
 
-  const loadPicklists = async () => {
-    const res = await axiosPrivate.get(
-      "/o/headless-admin-list-type/v1.0/list-type-definitions"
-    );
+  /* ========= LOAD MASTER OBJECTS ========= */
 
-    res.data.items.forEach(def => {
-      if (def.externalReferenceCode === "CATEGORY") {
-        def.listTypeEntries.forEach(e => {
-          categoryMap.current[e.key] = e.name;
-        });
-      }
-
-      if (def.externalReferenceCode === "PRIORITY") {
-        def.listTypeEntries.forEach(e => {
-          priorityMap.current[e.key] = e.name;
-        });
-      }
+  const loadCategoryTypes = async () => {
+    const scopeGroupId = Liferay.ThemeDisplay.getScopeGroupId();
+    const res = await axiosPrivate.get(`/o/c/categorytypes/scopes/${scopeGroupId}`);
+    res.data.items.forEach(i => {
+      categoryMap.current[i.id] = {
+        label: i.categoryType,
+        color: i.color
+      };
     });
   };
- 
+
+  const loadPriorityTypes = async () => {
+    const scopeGroupId = Liferay.ThemeDisplay.getScopeGroupId();
+    const res = await axiosPrivate.get(`/o/c/prioritytypes/scopes/${scopeGroupId}`);
+    res.data.items.forEach(i => {
+      priorityMap.current[i.id] = {
+        label: i.priorityType,
+        color: i.color
+      };
+    });
+  };
+
+  const loadDemandStageTypes = async () => {
+    const scopeGroupId = Liferay.ThemeDisplay.getScopeGroupId();
+    const res = await axiosPrivate.get(`/o/c/demandstagetypes/scopes/${scopeGroupId}`);
+    res.data.items.forEach(i => {
+      stageMap.current[i.id] = {
+        label: i.demandStageType,
+        color: i.color
+      };
+    });
+  };
+
+  /* ========= LOAD DEMANDS ========= */
 
   const loadDemands = async () => {
     const scopeGroupId = Liferay.ThemeDisplay.getScopeGroupId();
@@ -72,11 +89,15 @@ const DemandListing = () => {
     setDemands(res.data.items || []);
   };
 
+  /* ========= INIT ========= */
+
   useEffect(() => {
     const init = async () => {
       setLoading(true);
       await Promise.all([
-        loadPicklists(),
+        loadCategoryTypes(),
+        loadPriorityTypes(),
+        loadDemandStageTypes(),
         loadUserAndTasks(),
         loadDemands()
       ]);
@@ -84,39 +105,35 @@ const DemandListing = () => {
     };
     init();
   }, [loadUserAndTasks]);
- 
 
-  const renderPicklist = (value, map) => {
-    if (!value) return "-";
-    if (typeof value === "object" && value.key) {
-      return map[value.key] || value.key;
-    }
-    return map[value] || value;
-  };
+  /* ========= HELPERS ========= */
 
-  const getDemandStageFromStatus = (code) => {
- console.log("code ",code);
-    switch (code) {
-      case 1:
-        return "Demand Intake";
-      case 7:
-        return "Pre Analysis Phase";
-      case 2:
-        return "Demand Initiation";
-      case 0:
-        return "Moved to Delivery";
-      default:
-        return "-";
-    }
-  };
-
-  const getWorkflowTask = (demandId) =>
+  const getWorkflowTask = demandId =>
     tasks.find(
       t =>
         t.objectReviewed &&
         String(t.objectReviewed.id) === String(demandId)
     );
- 
+
+  const renderPill = (label, color) => {
+    if (!label) return "-";
+    return `
+      <span style="
+        background:${color || "#BDBDBD"};
+        color:#fff;
+        padding:4px 10px;
+        border-radius:6px;
+        font-size:12px;
+        font-weight:600;
+        white-space:nowrap;
+        display:inline-block;">
+        ${label}
+      </span>
+    `;
+  };
+
+  /* ========= DATATABLE ========= */
+
   useEffect(() => {
     if (loading) return;
 
@@ -126,13 +143,9 @@ const DemandListing = () => {
 
     const table = $("#demandTable").DataTable({
       data: demands,
-      searching: false,
-      lengthChange: false,
-    
       paging: true,
-      info: true,
-      autoWidth: false,
- ordering: true,   
+      searching: false,
+      ordering: true,
       order: [[1, "desc"]],
       columns: [
         { title: "Item", data: "name" },
@@ -142,46 +155,46 @@ const DemandListing = () => {
           render: d => d ? new Date(d).toLocaleDateString() : "-"
         },
         { title: "Demand ID", data: "demandId" },
-        { title: "Azure ID", data: "azureId" },
-        { title: "Initiator", data: "initiator" },
-        { title: "Initiator Team", data: "initiatorTeam" },
-        { title: "Business Sponsor", data: "businessSponsor" },
-        { title: "Demand Description", data: "name" },
+
         {
           title: "Category",
-          data: "category",
-          render: v => renderPicklist(v, categoryMap.current)
+          render: (_, __, row) => {
+            const cfg = categoryMap.current[row.r_categoryId_c_categoryTypeId];
+            return renderPill(cfg?.label, cfg?.color);
+          }
         },
+
         {
           title: "Priority",
-          data: "priority",
-          render: v => renderPicklist(v, priorityMap.current)
+          render: (_, __, row) => {
+            const cfg = priorityMap.current[row.r_priorityId_c_priorityTypeId];
+            return renderPill(cfg?.label, cfg?.color);
+          }
         },
+
         {
           title: "Demand Stage",
-          data: "status",
-          render: (statusObj, type, row) => {
-            if (!statusObj) return "-";
-
-            const label = getDemandStageFromStatus(statusObj.code);
-		console.log("Label ",label);
+          render: (_, __, row) => {
+            const cfg =
+              stageMap.current[row.r_demandStageId_c_demandStageTypeId];
             const task = getWorkflowTask(row.id);
-
-            console.log("Status =", statusObj);
-            console.log("Label =", label);
-            console.log("Task =", task);
 
             if (role === "itManager" && task) {
               return `
-                <button
-                  class="stage-btn"
-                  data-demand-id="${row.id}">
-                  ${label}
+                <button class="stage-btn"
+                  data-demand-id="${row.id}"
+                  style="background:${cfg?.color};
+                         color:#fff;
+                         border:none;
+                         padding:4px 10px;
+                         border-radius:6px;
+                         font-weight:600;">
+                  ${cfg?.label}
                 </button>
               `;
             }
 
-            return `<span>${label}</span>`;
+            return renderPill(cfg?.label, cfg?.color);
           }
         }
       ]
@@ -189,7 +202,6 @@ const DemandListing = () => {
 
     $("#demandTable").off("click", ".stage-btn");
     $("#demandTable").on("click", ".stage-btn", function () {
-	console.log("Inside modal");
       const demandId = $(this).data("demand-id");
       const demand = demands.find(d => String(d.id) === String(demandId));
       setSelectedDemand(demand);
@@ -199,42 +211,31 @@ const DemandListing = () => {
     return () => table.destroy(true);
   }, [demands, loading, role, tasks]);
 
-  /* ================= UI ================= */
+  /* ========= UI ========= */
 
   return (
     <div style={{ overflowX: "auto" }}>
-       
-
       <table
         id="demandTable"
-        className="display nowrap"
+        className="display nowrap stripe row-border"
         style={{ width: "100%" }}
       />
 
       {activeModal && selectedDemand && (
-        
-
         <DemandWorkflowModal
-            demand={selectedDemand}
-            task={getWorkflowTask(selectedDemand.id)}
-            onClose={async (refresh) => {
-              setActiveModal(false);
-              setSelectedDemand(null);
-
-              if (refresh) {
-                setLoading(true);
-
-
-                 if ($.fn.DataTable.isDataTable("#demandTable")) {
-                    $("#demandTable").DataTable().clear().destroy(true);
-                  }
-                await loadUserAndTasks(); 
-                await loadDemands();       
-                setLoading(false);
-              }
-            }}
-          />
-
+          demand={selectedDemand}
+          task={getWorkflowTask(selectedDemand.id)}
+          onClose={async refresh => {
+            setActiveModal(false);
+            setSelectedDemand(null);
+            if (refresh) {
+              setLoading(true);
+              await loadUserAndTasks();
+              await loadDemands();
+              setLoading(false);
+            }
+          }}
+        />
       )}
     </div>
   );
