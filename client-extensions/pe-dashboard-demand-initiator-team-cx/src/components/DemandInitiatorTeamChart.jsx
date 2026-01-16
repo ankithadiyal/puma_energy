@@ -2,6 +2,7 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import React, { useEffect, useState } from 'react';
 import { axiosPrivate } from '../../../pe-dashboard-demand-types-cx/src/common/axios';
+
 const DemandInitiatorTeamChart = () => {
 
   const [categories, setCategories] = useState([]);
@@ -32,29 +33,30 @@ const DemandInitiatorTeamChart = () => {
     console.log('DemandInitiatorTeamChart Colors:', extractedColors);
   }, []);
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosPrivate.get(constructedUrl, {
           params: {
             restrictFields: 'actions,status,creator',
-            pageSize: 200
+            pageSize: 500
           }
         });
 
         const items = response.data.items || [];
+        console.log('Demand Initiator Items:', items);
 
         const grouped = {};
 
         items.forEach(item => {
-          const team = item.initiatorTeam || 'Unknown';
+          const team = item.initiatorTeam?.trim() || 'Unknown';
           grouped[team] = (grouped[team] || 0) + 1;
         });
 
         const dynamicCategories = Object.keys(grouped);
         const dynamicData = Object.values(grouped);
+
+        console.log('Grouped Initiator Teams:', grouped);
 
         setCategories(dynamicCategories);
         setSeriesData(dynamicData);
@@ -66,8 +68,6 @@ const DemandInitiatorTeamChart = () => {
 
     fetchData();
   }, []);
-
-
 
   const options = {
     chart: {
@@ -84,7 +84,7 @@ const DemandInitiatorTeamChart = () => {
       categories: categories,
       crosshair: true,
       labels: {
-        rotation: 0, 
+        rotation: 0,
         style: {
           whiteSpace: 'nowrap'
         }
@@ -106,18 +106,18 @@ const DemandInitiatorTeamChart = () => {
 
     plotOptions: {
       column: {
-        borderRadius: 6,        
+        borderRadius: 6,
         pointPadding: 0.2,
         groupPadding: 0.15,
         dataLabels: {
-          enabled: true,       
+          enabled: true,
           format: '{y}'
         }
       }
     },
 
     legend: {
-      enabled: false           
+      enabled: false
     },
 
     series: [
