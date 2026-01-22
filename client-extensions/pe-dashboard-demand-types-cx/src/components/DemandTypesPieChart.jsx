@@ -11,50 +11,71 @@ const DemandTypesPieChart = () => {
   const constructedUrl = `/o/c/demandintakes/scopes/${scopeKey}`;
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosPrivate.get(constructedUrl, {
-          params: {
-            nestedFields:
-              'r_categoryId_c_categoryTypeId,r_priorityId_c_priorityTypeId,r_demandStageId_c_demandStageTypeId',
-            restrictFields: 'actions,status,creator',
-            pageSize: 500
-          }
-        });
+  const fetchData = async () => {
+    try {
+      const userId = Liferay.ThemeDisplay.getUserId();
 
-        const items = response.data.items || [];
+      const userResponse = await axiosPrivate.get(
+        `/o/headless-admin-user/v1.0/user-accounts/${userId}`
+      );
 
-        const grouped = {};
+      const roleBriefs = userResponse.data.roleBriefs || [];
 
-        items.forEach(item => {
-          const categoryObj = item.r_categoryId_c_categoryType;
+      console.debug(
+        "Dashboard visible for roles DemandTypesPieChart:",
+        roleBriefs.map(r => `${r.name} (${r.id})`).join(", ")
+      );
 
-          if (!categoryObj) return;
+      const roleFilter = roleBriefs
+        .map(role => `roleId eq '${role.id}'`)
+        .join(' or ');
 
-          const name = categoryObj.categoryType || 'Unknown';
-          const color = categoryObj.color || '#CCCCCC';
+      console.debug("Generated Role Filter:", roleFilter);
 
-          if (!grouped[name]) {
-            grouped[name] = {
-              name,
-              y: 0,
-              color
-            };
-          }
+      const response = await axiosPrivate.get(constructedUrl, {
+        params: {
+          nestedFields:
+            'r_categoryId_c_categoryTypeId,r_priorityId_c_priorityTypeId,r_demandStageId_c_demandStageTypeId',
+          restrictFields: 'actions,status,creator',
+          pageSize: 500,
+          filter: roleFilter  
+        }
+      });
 
-          grouped[name].y += 1;
-        });
+      const items = response.data.items || [];
 
-        const formattedData = Object.values(grouped);
+      const grouped = {};
 
-        setChartData(formattedData);
-      } catch (error) {
-        console.error('Error fetching demand types:', error);
-      }
-    };
+      items.forEach(item => {
+        const categoryObj = item.r_categoryId_c_categoryType;
 
-    fetchData();
-  }, []);
+        if (!categoryObj) return;
+
+        const name = categoryObj.categoryType || 'Unknown';
+        const color = categoryObj.color || '#CCCCCC';
+
+        if (!grouped[name]) {
+          grouped[name] = {
+            name,
+            y: 0,
+            color
+          };
+        }
+
+        grouped[name].y += 1;
+      });
+
+      const formattedData = Object.values(grouped);
+
+      setChartData(formattedData);
+    } catch (error) {
+      console.error('Error fetching demand types:', error);
+    }
+  };
+
+  fetchData();
+}, []);
+
 
   const options = {
     chart: {

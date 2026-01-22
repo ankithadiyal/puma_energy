@@ -8,6 +8,7 @@
 **/build
 **/build_gradle
 **/dist
+**/vite-build
 **/node_modules
 **/node_modules_cache
 **/test-coverage
