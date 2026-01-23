@@ -36,29 +36,10 @@ const DemandInitiatorTeamChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = Liferay.ThemeDisplay.getUserId();
-
-        const userResponse = await axiosPrivate.get(
-          `/o/headless-admin-user/v1.0/user-accounts/${userId}`
-        );
-
-        const roleBriefs = userResponse.data.roleBriefs || [];
-
-        const roleFilter = roleBriefs
-          .map(role => `roleId eq '${role.id}'`)
-          .join(' or ');
-
-        console.debug(
-          "Dashboard visible for roles DemandInitiatorTeamChart:",
-          roleBriefs.map(r => `${r.name} (${r.id})`).join(", ")
-        );
-        console.debug("Generated Filter:", roleFilter);
-
         const response = await axiosPrivate.get(constructedUrl, {
           params: {
             restrictFields: 'actions,status,creator',
-            pageSize: 500,
-            filter: roleFilter
+            pageSize: 500
           }
         });
 
@@ -75,7 +56,7 @@ const DemandInitiatorTeamChart = () => {
         setSeriesData(Object.values(grouped));
 
       } catch (error) {
-        console.error('Error fetching filtered data:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
