@@ -1,146 +1,907 @@
-/* =========================================================
-   DATATABLE BASE
-   ========================================================= */
+/* Remove default background */
+body {
+  margin: 0;
+  padding: 0;
+}
 
-.demand-table-wrapper {
+/* Modern Table Container */
+.demand-listing-container {
+  padding: 24px;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+.table-wrapper {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  overflow: hidden;
+}
+
+/* DataTable Wrapper */
+.dataTables_wrapper {
   width: 100%;
+  position: relative;
 }
 
-table.dataTable {
-  width: 100% !important;
-  border-collapse: collapse !important;
+/* Top Controls Container */
+.dataTables_wrapper .top-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 16px;
 }
 
-/* =========================================================
-   TABLE HEADER (FIXED / STICKY)
-   ========================================================= */
-
-table.dataTable thead th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-
-  background: #f4f6f8;
-  font-weight: 600;
-  font-size: 13px;
-  color: #1c1c1c;
-
-  padding: 8px 12px;
-  white-space: nowrap;
-
-  border-bottom: 1px solid #dcdcdc;
-  border-right: 1px solid #e0e0e0;
+/* Entries Per Page Styling */
+.dataTables_length {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* =========================================================
-   TABLE BODY
-   ========================================================= */
-
-table.dataTable tbody td {
-  font-size: 13px;
-  padding: 8px 12px;
-  white-space: nowrap;
-
-  border-right: 1px solid #ececec;
-  border-bottom: 1px solid #f0f0f0;
-
-  background: #ffffff !important;
-  font-weight: normal !important;
-  color: #1c1c1c;
+.dataTables_length label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+  margin: 0;
 }
 
-/* Prevent first row styling issue */
-table.dataTable tbody tr:first-child td {
-  background: #ffffff !important;
-  font-weight: normal !important;
+.dataTables_length select {
+  padding: 8px 32px 8px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
 }
 
- 
+.dataTables_length select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Search Box Styling */
+.dataTables_filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dataTables_filter label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+  margin: 0;
+}
+
+.dataTables_filter input {
+  padding: 8px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  width: 250px;
+}
+
+.dataTables_filter input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Table Container with Fixed Column */
+.table-scroll-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.dataTables_scroll {
+  overflow: visible !important;
+}
+
+.dataTables_scrollHead {
+  overflow: visible !important;
+}
 
 .dataTables_scrollBody {
   overflow-x: auto !important;
   overflow-y: auto !important;
+  max-height: 500px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 
-.dataTables_scrollHeadInner,
-.dataTables_scrollHeadInner table {
+/* Hide scrollbar for Chrome/Safari/Opera */
+.dataTables_scrollBody::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* Table Base Styling */
+#demandTable {
   width: 100% !important;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  margin: 0 !important;
 }
 
-.dataTables_scrollHead {
-  margin-bottom: 0 !important;
-}
- 
-
-.dataTables_wrapper .dataTables_paginate {
-  margin-top: 12px;
+/* Table Header - Remove Duplicate */
+#demandTable thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.dataTables_wrapper .dataTables_info {
+#demandTable thead tr {
+  background: transparent !important;
+}
+
+#demandTable thead th {
+  padding: 14px 16px !important;
+  font-weight: 600;
   font-size: 12px;
-  margin-top: 8px;
-}
- 
-table.dataTable tbody tr:hover {
-  background-color: #f7f9fb !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none !important;
+  white-space: nowrap;
+  color: #ffffff !important;
+  background: transparent !important;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
- 
+/* First column sticky */
+#demandTable thead th:first-child,
+#demandTable tbody td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background: inherit;
+}
 
-.category-badge,
-.priority-badge {
-  padding: 4px 10px;
-  border-radius: 4px;
+#demandTable thead th:first-child {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  z-index: 30 !important;
+}
+
+#demandTable tbody td:first-child {
+  background: #ffffff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+#demandTable tbody tr:hover td:first-child {
+  background: #f8f9ff;
+}
+
+/* Remove sorting arrows background */
+#demandTable thead th.sorting,
+#demandTable thead th.sorting_asc,
+#demandTable thead th.sorting_desc {
+  background-image: none !important;
+  cursor: pointer;
+  padding-right: 24px !important;
+}
+
+#demandTable thead th.sorting::after {
+  content: '⇅';
+  position: absolute;
+  right: 8px;
+  opacity: 0.5;
+}
+
+#demandTable thead th.sorting_asc::after {
+  content: '↑';
+  position: absolute;
+  right: 8px;
+  opacity: 1;
+}
+
+#demandTable thead th.sorting_desc::after {
+  content: '↓';
+  position: absolute;
+  right: 8px;
+  opacity: 1;
+}
+
+/* Table Body */
+#demandTable tbody tr {
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f3f4f6;
+  background: #ffffff;
+}
+
+#demandTable tbody tr:hover {
+  background: #f8f9ff;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+}
+
+#demandTable tbody td {
+  padding: 14px 16px !important;
+  font-size: 14px;
+  color: #374151;
+  vertical-align: middle;
+  border: none !important;
+  white-space: nowrap;
+}
+
+/* Pill Styling */
+.status-pill {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 16px;
   font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.status-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Stage Button - Interactive */
+.stage-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  /* transition: all 0.3s ease; */
+  /* box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15); */
+  white-space: nowrap;
+}
+
+.stage-btn::after {
+  content: '→';
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.stage-btn:hover::after {
+  /* transform: translateX(4px); */
+}
+
+.stage-btn:hover {
+  transform: translateY(-2px);
+  /* box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); */
+}
+
+.stage-btn:active {
+  transform: translateY(0);
+  /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); */
+}
+
+/* Bottom Info and Pagination */
+.dataTables_info {
+  float: left;
+  padding-top: 20px;
+  color: #6b7280;
+  font-size: 14px;
   font-weight: 500;
 }
 
-.category-badge {
-  background: #e6ecf5;
-  color: #1c2b4a;
+.dataTables_paginate {
+  float: right;
+  padding-top: 20px;
 }
 
-.priority-badge {
-  background: #d6eaf8;
-  color: #154360;
-}
-
-.stage-badge {
+.dataTables_paginate .paginate_button {
   display: inline-block;
-  padding: 6px 12px;
-  border-radius: 4px;
+  padding: 8px 14px;
+  margin: 0 4px;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb !important;
+  background: #ffffff !important;
+  color: #374151 !important;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none !important;
+}
+
+.dataTables_paginate .paginate_button:hover:not(.disabled) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.dataTables_paginate .paginate_button.current {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.dataTables_paginate .paginate_button.disabled {
+  opacity: 0.4;
+  cursor: not-allowed !important;
+  background: #f3f4f6 !important;
+  color: #9ca3af !important;
+}
+
+/* Clear floats */
+.dataTables_wrapper::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Modal Styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 480px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-content h4:first-of-type {
+  color: #1f2937;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.modal-content h4:nth-of-type(2) {
+  font-size: 13px;
+  color: #9ca3af;
+  font-weight: 500;
+  margin: 0 0 24px 0;
+}
+
+/* Action Buttons in Modal */
+.action-btn {
+  width: 100%;
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+.close-btn {
+  width: 100%;
+  padding: 12px 20px;
+  margin-top: 8px;
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  background: #e5e7eb;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+/* Loading and Error States */
+.modal-content p {
+  color: #6b7280;
+  font-size: 14px;
+  text-align: center;
+  padding: 16px 0;
+  margin: 0;
+}
+
+.modal-content .error {
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .demand-listing-container {
+    padding: 12px;
+  }
+  
+  .table-wrapper {
+    padding: 16px;
+  }
+  
+  .dataTables_wrapper .top-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .dataTables_filter input {
+    width: 100%;
+  }
+  
+  .modal-content {
+    padding: 24px;
+  }
+  
+  #demandTable thead th,
+  #demandTable tbody td {
+    padding: 10px 12px !important;
+    font-size: 12px;
+  }
+}
+thead th:not(:has(.dt-scroll-sizing)) {
+    display: none;
+}
+
+
+
+
+
+
+/* ================================
+   DataTables v2 – REAL scrollbar kill
+   ================================ */
+
+/* Actual scroll container */
+.dt-scroll-body {
+  overflow-x: scroll !important;
+  overflow-y: auto !important;
+
+  /* Firefox */
+  scrollbar-width: none;
+
+  /* IE / Edge */
+  -ms-overflow-style: none;
+}
+
+/* Chrome / Safari / Edge */
+.dt-scroll-body::-webkit-scrollbar {
+  height: 0 !important;
+  display: none !important;
+}
+
+/* Kill reserved scrollbar height */
+.dt-scroll-body {
+  margin-bottom: -16px;
+  padding-bottom: 16px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Info Text */
+.dt-info {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 40px;
+}
+
+/* Pagination Container */
+.dt-paging {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.dt-paging nav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Pagination Buttons - DataTables v2 */
+.dt-paging-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px !important;
+  margin: 0 !important;
+  border-radius: 8px !important;
+  border: 2px solid #e5e7eb !important;
+  background: #ffffff !important;
+  color: #374151 !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none !important;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Hover State */
+.dt-paging-button:hover:not(.disabled):not(.current) {
+  background: #f3f4f6 !important;
+  border-color: #d1d5db !important;
+  transform: translateY(-1px);
+}
+
+/* Current/Active Page */
+.dt-paging-button.current,
+.dt-paging-button.current:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  cursor: default;
+}
+
+/* Disabled State */
+.dt-paging-button.disabled,
+.dt-paging-button.disabled:hover,
+.dt-paging-button[aria-disabled="true"],
+.dt-paging-button[aria-disabled="true"]:hover {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  background: #ffffff !important;
+  color: #9ca3af !important;
+  border-color: #e5e7eb !important;
+  transform: none !important;
+}
+
+/* First/Previous/Next/Last specific styling */
+.dt-paging-button.first,
+.dt-paging-button.previous,
+.dt-paging-button.next,
+.dt-paging-button.last {
+  font-weight: 600 !important;
+  text-transform: capitalize;
+}
+
+/* Bottom Container - Info + Pagination */
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 16px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.dt-length {
+  display: flex;
+  align-items: center;
+}
+
+.dt-length label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Dropdown Select Styling */
+.dt-input,
+.dt-length select {
+  padding: 8px 36px 8px 12px !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  background: white !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px center !important;
+  font-weight: 500 !important;
+  color: #374151 !important;
+  min-width: 70px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.dt-input:focus,
+.dt-length select:focus {
+  outline: none !important;
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
+.dt-input:hover,
+.dt-length select:hover {
+  border-color: #d1d5db !important;
+}
+
+.top-controls {
+    margin-bottom: 20px;
+}
+td:has(.status-\#6C5CE7){
+  background-color: #6C5CE7;
+}
+
+.status-\#6C5CE7{
+  box-shadow: none;
+}
+
+
+
+
+
+
+
+
+
+/* Full Box Color Cell - Zero padding */
+.full-box-cell {
+  padding: 0 !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+}
+
+.full-box-color {
+  width: 100%;
+  height: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.full-box-color span {
   font-size: 12px;
   font-weight: 600;
-  background: #d5f5e3;
-  color: #1e8449;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
- 
-.approve-btn {
-  background: #1e8449;
-  color: #ffffff;
-  border: none;
-  padding: 4px 10px;
-  font-size: 12px;
-  border-radius: 4px;
+/* Full width stage button */
+.stage-btn-full {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 13px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.reject-btn {
-  background: #c0392b;
-  color: #ffffff;
-  border: none;
-  padding: 4px 10px;
-  font-size: 12px;
-  border-radius: 4px;
-  cursor: pointer;
+.stage-btn-full::after {
+  content: '→';
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.stage-btn-full:hover {
+  filter: brightness(1.1);
+}
+
+.stage-btn-full:hover::after {
+  transform: translateX(4px);
 }
 
 
-.dataTables_wrapper {
-  width: 100%;
+
+
+
+/* Fix sticky first column header background on scroll - DataTables v2 */
+#demandTable thead th:first-child .dt-scroll-sizing {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
 }
 
-.dataTables_scrollBody {
-  overflow-x: auto !important;
-} 	
+#demandTable thead th:first-child .dt-column-header {
+  background: transparent !important;
+}
+
+/* Ensure first column header maintains gradient */
+#demandTable thead th[data-dt-column="0"] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+#demandTable thead th[data-dt-column="0"] .dt-scroll-sizing,
+#demandTable thead th[data-dt-column="0"] .dt-column-header {
+  background: transparent !important;
+}
+
+/* All header cells maintain gradient background */
+#demandTable thead th .dt-scroll-sizing {
+  background: transparent !important;
+}
+
+#demandTable thead th .dt-column-header {
+  background: transparent !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* Single solid color for all headers - maintains on scroll */
+#demandTable thead {
+  background: #667eea !important;
+}
+
+#demandTable thead tr {
+  background: transparent !important;
+}
+
+#demandTable thead th {
+  background: #667eea !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+/* Make nested divs transparent */
+#demandTable thead th *,
+#demandTable thead th .dt-scroll-sizing,
+#demandTable thead th .dt-column-header {
+  background: transparent !important;
+}
+
+/* First column sticky */
+#demandTable thead th:first-child,
+#demandTable thead th[data-dt-column="0"] {
+  background: #667eea !important;
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 30 !important;
+}

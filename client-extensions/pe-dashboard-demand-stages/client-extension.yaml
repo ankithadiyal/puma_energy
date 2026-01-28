@@ -1,0 +1,13 @@
+assemble:
+    - from: vite-build
+      into: static
+pe-dashboard-demand-stages:
+    friendlyURLMapping: pe-dashboard-demand-stages
+    htmlElementName: pe-dashboard-demand-stages
+    instanceable: false
+    name: Puma Energy Dashboard Demand Stages
+    portletCategoryName: category.client-extensions
+    type: customElement
+    urls:
+        - assets/*.js
+    useESM: true

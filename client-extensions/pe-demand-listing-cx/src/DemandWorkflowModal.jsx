@@ -18,7 +18,17 @@ export default function DemandWorkflowModal({ demand, task, onClose }) {
         const res = await axiosPrivate.get(
           `/o/headless-admin-workflow/v1.0/workflow-tasks/${task.id}/next-transitions`
         );
+        console.log("res.data.items :: ",res.data.items)
 
+        const allowedTransitionName = getAllowedTransitionName();
+        console.log("Allowed transition =", allowedTransitionName);
+
+        const filteredTransitions = (res.data.items || []).filter(
+          t => t.name === allowedTransitionName
+        );
+
+        // setTransitions(filteredTransitions);
+        console.log("setTransitions :: ",res)
         setTransitions(res.data.items || []);
       } catch (e) {
         console.error("Failed to load transitions", e);
@@ -33,6 +43,12 @@ export default function DemandWorkflowModal({ demand, task, onClose }) {
     }
   }, [task]);
  
+const normalize = str =>
+  str
+    ?.toLowerCase()
+    .replace(/[^a-z0-9]/g, "").trim();
+
+
   const executeTransition = async (transitionName) => {
     try {
       console.log("Executing transition:", transitionName);
@@ -45,13 +61,51 @@ export default function DemandWorkflowModal({ demand, task, onClose }) {
         }
       );
  
-      await axiosPrivate.post(
+       const response =await axiosPrivate.post(
         `/o/headless-admin-workflow/v1.0/workflow-tasks/${task.id}/change-transition`,
         {
           transitionName,
           comment: "Moved via Demand UI"
         }
       );
+      console.log("Workflow transition response:", response);
+      console.log("Response data:", response.data);
+      console.log("Status:", response.status);
+
+      const scopeGroupId = Liferay.ThemeDisplay.getScopeGroupId();
+      const res = await axiosPrivate.get(`/o/c/demandstagetypes/scopes/${scopeGroupId}`);
+    
+ 
+  console.log("transitionName?.trim().toLowerCase() :: ",transitionName?.trim().toLowerCase())
+ 
+
+const matchedStage = res.data.items.find(item =>
+  normalize(item.demandStageType) === normalize(transitionName)
+);
+    
+    
+    if (matchedStage) {
+      console.log("Matched Demand Stage Type:", matchedStage);
+      console.log("Stage ID:", matchedStage.id);
+      console.log("Stage Label:", matchedStage.demandStageType);
+      console.log("Stage Color:", matchedStage.color);
+      console.log("${demand.id}",demand.id)
+  await new Promise(resolve => setTimeout(resolve, 1500));
+
+
+  await axiosPrivate.put(
+    `/o/c/demandintakes/${demand.id}`,
+    {
+      r_demandStageId_c_demandStageTypeId: matchedStage.id
+    }
+  );
+  
+    } else {
+      console.warn("No matching Demand Stage Type found for transition:", transitionName);
+    }
+ 
+    console.log("Demand stage updated successfully");
+
 
       // onClose(true);  
         window.location.reload();
@@ -62,10 +116,35 @@ export default function DemandWorkflowModal({ demand, task, onClose }) {
   };
  
 
+const formatLabel = label =>
+  label
+    ?.replace(/-/g, " ")               
+    .toLowerCase()                      
+    .replace(/\b\w/g, char => char.toUpperCase()); 
+
+
+
+
+    const getAllowedTransitionName = () => {
+    const value = Number(demand?.value || 0);
+
+    console.log("Demand VALUE =", value);
+
+    if (value <= 5000) {
+      return "moveToDelivery";
+    } else if (value > 5000 && value <= 50000) {
+      return "moveToDemandApprover";
+    } else {
+      return "moveToBusinessApprover";
+    }
+  };
+
+
+
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h4>{demand.name}</h4>
 
         {loading && <p>Loading workflow actions...</p>}
         {error && <p className="error">{error}</p>}
@@ -81,7 +160,7 @@ export default function DemandWorkflowModal({ demand, task, onClose }) {
               className="action-btn"
               onClick={() => executeTransition(t.name)}
             >
-              {t.label}
+              {formatLabel(t.label)}
             </button>
           ))}
 

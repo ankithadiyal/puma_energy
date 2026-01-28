@@ -4,83 +4,79 @@ import React, { useEffect, useState } from 'react';
 import { axiosPrivate } from '../common/axios';
 
 const DemandTypesPieChart = () => {
+
   const [chartData, setChartData] = useState([]);
+  const [colors, setColors] = useState([]);
 
   const scopeKey = Liferay.ThemeDisplay.getScopeGroupId();
-
   const constructedUrl = `/o/c/demandintakes/scopes/${scopeKey}`;
 
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const userId = Liferay.ThemeDisplay.getUserId();
+  const container = document.querySelector('.demand-types .dashboard-card');
 
-      const userResponse = await axiosPrivate.get(
-        `/o/headless-admin-user/v1.0/user-accounts/${userId}`
-      );
+  if (!container) {
+    console.error('dashboard-card not found inside demand-types');
+    return;
+  }
 
-      const roleBriefs = userResponse.data.roleBriefs || [];
+  const styles = getComputedStyle(container);
 
-      console.debug(
-        "Dashboard visible for roles DemandTypesPieChart:",
-        roleBriefs.map(r => `${r.name} (${r.id})`).join(", ")
-      );
+  const extractedColors = styles
+    .getPropertyValue('--chart-colors')
+    .split(',')
+    .map(c => c.trim())
+    .filter(Boolean);
 
-      const roleFilter = roleBriefs
-        .map(role => `roleId eq '${role.id}'`)
-        .join(' or ');
+  setColors(extractedColors);
 
-      console.debug("Generated Role Filter:", roleFilter);
-
-      const response = await axiosPrivate.get(constructedUrl, {
-        params: {
-          nestedFields:
-            'r_categoryId_c_categoryTypeId,r_priorityId_c_priorityTypeId,r_demandStageId_c_demandStageTypeId',
-          restrictFields: 'actions,status,creator',
-          pageSize: 500,
-          filter: roleFilter  
-        }
-      });
-
-      const items = response.data.items || [];
-
-      const grouped = {};
-
-      items.forEach(item => {
-        const categoryObj = item.r_categoryId_c_categoryType;
-
-        if (!categoryObj) return;
-
-        const name = categoryObj.categoryType || 'Unknown';
-        const color = categoryObj.color || '#CCCCCC';
-
-        if (!grouped[name]) {
-          grouped[name] = {
-            name,
-            y: 0,
-            color
-          };
-        }
-
-        grouped[name].y += 1;
-      });
-
-      const formattedData = Object.values(grouped);
-
-      setChartData(formattedData);
-    } catch (error) {
-      console.error('Error fetching demand types:', error);
-    }
-  };
-
-  fetchData();
+  console.log('Colors:', extractedColors);
 }, []);
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosPrivate.get(constructedUrl, {
+          params: {
+            scopeKey: scopeKey,
+            restrictFields: 'actions,status,creator',
+            pageSize: 500
+          }
+        });
+
+        const items = response.data.items || [];
+
+        const grouped = {};
+
+        items.forEach(item => {
+          const categoryName = item.category?.name || 'Unknown';
+          grouped[categoryName] = (grouped[categoryName] || 0) + 1;
+        });
+
+        const formattedData = Object.keys(grouped).map(key => ({
+          name: key,
+          y: grouped[key] 
+        }));
+
+        setChartData(formattedData);
+      } catch (error) {
+        console.error('Error fetching demand types:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
 
 
   const options = {
     chart: {
       type: 'pie'
     },
+
+    colors: colors,
 
     title: {
       text: null
@@ -110,13 +106,15 @@ const DemandTypesPieChart = () => {
         dataLabels: {
           enabled: false
         },
-        showInLegend: true
+        showInLegend: true,
+        // center: ['35%', '50%']
       }
     },
 
     series: [
       {
         name: 'Demands',
+        colorByPoint: true,
         data: chartData
       }
     ],
