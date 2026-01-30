@@ -1,0 +1,10 @@
+{
+    "private": true,
+    "workspaces": {
+        "packages": [
+            "client-extensions\\pe-dashboard-demand-initiator-team-cx",
+            "client-extensions\\pe-dashboard-demand-types-cx",
+            "client-extensions\\pe-demand-listing-cx"
+        ]
+    }
+}
